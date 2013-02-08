@@ -48,7 +48,7 @@ def warm_ratio
   ($temp.to_f - $cold.to_f) / ($hot.to_f - $cold.to_f)
 end
 
-def warm_colour
+def blink_colour
   # A colour between blue and red though orange using warm_ratio
 end
 
@@ -64,6 +64,7 @@ def is_raining?
   return true if $conditions =~ /rain|drizzle|shower/i
 end
 
+# is_cold?, is_warm?, and is_hot? aren't really that useful, I might cut them away and make a colour method to create an accurate $colour
 def is_cold?
   return true if $temp.to_f <= $cold.to_f
 end
@@ -117,6 +118,7 @@ def blinker
    while true
     display_conditions
 
+    # this need to be rewritten to be pretty
     $colour = $coldcolour if is_cold?
     $colour = $warmcolour if is_warm?
     $colour = $hotcolour if is_hot?
@@ -130,11 +132,4 @@ t1=Thread.new{pull_update()}
 t2=Thread.new{blinker()}
 t1.join
 t2.join
-
-
-
-
-
-
-
 
