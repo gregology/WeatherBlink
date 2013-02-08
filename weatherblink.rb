@@ -2,7 +2,7 @@
 require 'open-uri'
 require 'rubygems'
 require 'json'
-require_relative 'settings.conf'
+require_relative 'config.rb'
 include Comparable
 
 
