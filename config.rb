@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 # You can get a free wunder ground api key from http://www.wunderground.com/weather/api/
-$wundergroundapikey = '1122334455667788'
+$wundergroundapikey = '236d258e67fc286e'
 
 # city code, it took me a while to find this for Ottawa, if you find a list please push it to this git repo :)
 $citycode = 'zmw:00000.1.71063'
