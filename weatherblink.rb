@@ -2,29 +2,45 @@
 require 'open-uri'
 require 'rubygems'
 require 'json'
+require 'active_support/all'
 require_relative 'config.rb'
 include Comparable
 
-def pull_weather
-  f = File.open('latest.json', 'w')
+def pull_conditions
+  f = File.open('conditions.json', 'w')
   f.puts open('http://api.wunderground.com/api/'+$wundergroundapikey+'/conditions/q/'+$citycode+'.json') {|f| f.read }
   f.close
-  system('chmod 777 latest.json')
+  system('chmod 777 conditions.json')
+end
+
+def pull_alerts
+  f = File.open('alerts.json', 'w')
+  f.puts open('http://api.wunderground.com/api/'+$wundergroundapikey+'/alerts/q/'+$citycode+'.json') {|f| f.read }
+  f.close
+  system('chmod 777 alerts.json')
+end
+
+def update_alerts
+  file = File.open("alerts.json", "rb")
+  alerts = file.read
+  file.close
+  parsed = JSON.parse(alerts)
+  $alerts = parsed['alerts'][0]
 end
 
 def update_temp
-  file = File.open("latest.json", "rb")
-  latest = file.read
+  file = File.open("conditions.json", "rb")
+  conditions = file.read
   file.close
-  parsed = JSON.parse(latest)
+  parsed = JSON.parse(conditions)
   $temp = parsed['current_observation']['temp_c']
 end
 
 def update_conditions
-  file = File.open("latest.json", "rb")
-  latest = file.read
+  file = File.open("conditions.json", "rb")
+  conditions = file.read
   file.close
-  parsed = JSON.parse(latest)
+  parsed = JSON.parse(conditions)
   $conditions = parsed['current_observation']['weather']
 end
 
@@ -37,7 +53,11 @@ def warm_colour
 end
 
 def is_snowing?
-  return true if $conditions =~ /snow|blizzard/i
+  return true if $conditions =~ /snow/i
+end
+
+def is_weather_alert?
+  return true if !$alerts.nil?
 end
 
 def is_raining?
@@ -57,28 +77,63 @@ def is_hot?
 end
 
 def blink(rgb)
-  system('./blink1-tool --rgb ' + rgb.to_s)
+  system('./blink1-tool --rgb ' + rgb.to_s + ' -ms 100 -t 0')
 end
 
-pull_weather
+def display_conditions
+  puts 'Conditions - ' + $conditions.to_s
+  puts 'Temperature - ' + $temp.to_s
+  puts 'WEATHER ALERT - ' + $alerts['description'].to_s if is_weather_alert?
+end
 
-  loop do
+def blink_warning
+  blink('255,0,0')
+  sleep(0.5)
+  blink('0,0,255')
+  sleep(0.5)
+end
+
+def blink_weather
+  blink($colour)
+  sleep(1.5)
+  blink('255,255,255') if is_snowing?
+  blink('0,255,255') if is_raining?
+  sleep(0.5)
+end
+
+def pull_update
+   while true
+    pull_conditions
+    pull_alerts
     update_temp
     update_conditions
+    update_alerts
+    puts 'Conditions and alerts updated!'
+    sleep(10.minutes)
+   end
+end
+
+def blinker
+   while true
+    display_conditions
 
     $colour = $coldcolour if is_cold?
     $colour = $warmcolour if is_warm?
     $colour = $hotcolour if is_hot?
 
-    puts 'Conditions - ' + $conditions.to_s
-    puts 'Temperature - ' + $temp.to_s
+    is_weather_alert? ? blink_warning : blink_weather
+   end
+end
 
-    blink($colour)
-    sleep(1)
-    blink('0,0,0') if is_snowing?
-    sleep(0.5)
 
-  end
+t1=Thread.new{pull_update()}
+t2=Thread.new{blinker()}
+t1.join
+t2.join
+
+
+
+
 
 
 
