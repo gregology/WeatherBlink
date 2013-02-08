@@ -10,6 +10,7 @@ def pull_weather
   f = File.open('latest.json', 'w')
   f.puts open('http://api.wunderground.com/api/'+$wundergroundapikey+'/conditions/q/'+$citycode+'.json') {|f| f.read }
   f.close
+  exec('chmod 777 latest.json')
 end
 
 def update_temp
@@ -53,31 +54,33 @@ def is_hot?
 end
 
 def blink(rgb)
-  exec('./blink1-tool --rgb ' + rgb.to_s)
+  system('./blink1-tool --rgb ' + rgb.to_s)
 end
 
 #pull_weather
 
-t = Thread.new() {
   loop do
     update_temp
     update_conditions
 
       if is_cold?
+        puts $temp.to_s + ' is cold'
         blink($coldcolour)
       end
 
       if is_warm?
+        puts $temp.to_s + ' is warm'
         blink($warmcolour)
       end
 
       if is_hot?
+        puts $temp.to_s + ' is hot'
         blink($hotcolour)
       end
 
     sleep(2)
   end
-}
+
 
 
 
