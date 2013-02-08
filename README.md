@@ -1,4 +1,4 @@
 WeatherBlink
 ============
 
-A weather indicator for Raspberry Pi and Blink1
+A Ruby weather indicator for and Blink1 indtened to be run on a Raspberry Pi
