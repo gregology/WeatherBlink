@@ -5,12 +5,11 @@ require 'json'
 require_relative 'config.rb'
 include Comparable
 
-
 def pull_weather
   f = File.open('latest.json', 'w')
   f.puts open('http://api.wunderground.com/api/'+$wundergroundapikey+'/conditions/q/'+$citycode+'.json') {|f| f.read }
   f.close
-  exec('chmod 777 latest.json')
+  system('chmod 777 latest.json')
 end
 
 def update_temp
@@ -31,6 +30,10 @@ end
 
 def warm_ratio
   ($temp.to_f - $cold.to_f) / ($hot.to_f - $cold.to_f)
+end
+
+def warm_colour
+  # A colour between blue and red though orange using warm_ratio
 end
 
 def is_snowing?
@@ -57,28 +60,24 @@ def blink(rgb)
   system('./blink1-tool --rgb ' + rgb.to_s)
 end
 
-#pull_weather
+pull_weather
 
   loop do
     update_temp
     update_conditions
 
-      if is_cold?
-        puts $temp.to_s + ' is cold'
-        blink($coldcolour)
-      end
+    $colour = $coldcolour if is_cold?
+    $colour = $warmcolour if is_warm?
+    $colour = $hotcolour if is_hot?
 
-      if is_warm?
-        puts $temp.to_s + ' is warm'
-        blink($warmcolour)
-      end
+    puts 'Conditions - ' + $conditions.to_s
+    puts 'Temperature - ' + $temp.to_s
 
-      if is_hot?
-        puts $temp.to_s + ' is hot'
-        blink($hotcolour)
-      end
+    blink($colour)
+    sleep(1)
+    blink('0,0,0') if is_snowing?
+    sleep(0.5)
 
-    sleep(2)
   end
 
 
