@@ -3,7 +3,7 @@ require 'open-uri'
 require 'rubygems'
 require 'json'
 require 'active_support/all'
-#require_relative 'config.rb'
+require_relative 'config.rb'
 include Comparable
 
 def pull_conditions
