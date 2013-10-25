@@ -10,8 +10,11 @@ logger.setLevel(logging.DEBUG)
 
 logger.info('Start time')
 
+# User variables
 city = "zmw:00000.1.71063"
 key = "236d258e67fc286e"
+cold = -5
+warm = 10
 
 logger.debug('city: ' + city)
 logger.debug('key: ' + key)
