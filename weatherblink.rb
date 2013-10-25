@@ -17,9 +17,11 @@ def log_time(input)
 end
 
 def load_config
-  config = YAML::load(File.open('config.yml'))
+  $config = YAML::load(File.open('config.yml'))
   log_time("loaded configh file\n#{config}")
 end
+
+puts $config
 
 =begin
 
