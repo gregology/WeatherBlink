@@ -18,8 +18,10 @@ end
 
 def load_config
   $config = YAML::load(File.open('config.yml'))
-  log_time("loaded configh file\n#{config}")
+  log_time("loaded configh file\n#{$config}")
 end
+
+load_config
 
 puts $config
 
