@@ -21,6 +21,8 @@ def load_config
   log_time("loaded configh file\n#{config}")
 end
 
+=begin
+
 def pull_conditions
   f = File.open('conditions.json', 'w')
   f.puts open('http://api.wunderground.com/api/'+$wundergroundapikey+'/conditions/q/'+$citycode+'.json') {|f| f.read }
