@@ -3,16 +3,23 @@ require 'open-uri'
 require 'rubygems'
 require 'json'
 require 'active_support/all'
+require 'logger'
 require 'yaml'
 include Comparable
 
-def load_config
-  config = YAML::load(File.open('config.yml'))
+$LOG = Logger.new('log.log')
+# Set back to default formatter because active_support/all is messing things up
+$LOG.formatter = Logger::Formatter.new
+
+def log_time(input)
+  puts Time.now.to_s + ", " + input
+  $LOG.info(input)
 end
 
-puts load_config
-
-=begin
+def load_config
+  config = YAML::load(File.open('config.yml'))
+  log_time("loaded configh file\n#{config}")
+end
 
 def pull_conditions
   f = File.open('conditions.json', 'w')
@@ -122,6 +129,8 @@ def pull_update
    end
 end
 
+
+=begin
 def blinker
    while true
     display_conditions
