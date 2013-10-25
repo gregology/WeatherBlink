@@ -3,8 +3,15 @@ require 'open-uri'
 require 'rubygems'
 require 'json'
 require 'active_support/all'
-require_relative 'config.rb'
+require 'yaml'
 include Comparable
+
+def load_config
+  config = YAML::load(File.open('config.yml'))
+  inspect config
+end
+
+=begin
 
 def pull_conditions
   f = File.open('conditions.json', 'w')
@@ -133,3 +140,4 @@ t2=Thread.new{blinker()}
 t1.join
 t2.join
 
+=end
