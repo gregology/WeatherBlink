@@ -18,13 +18,16 @@ end
 
 def load_config
   $config = YAML::load(File.open('config.yml'))
-  log_time("loaded configh file\n#{$config}")
+  log_time("loaded configh file")
+  puts $config
 end
 
 def set_vars
     $coldcolour = $config['coldcolour']
+    $cold = $config['cold']
     $warmcolour = $config['warmcolour']
     $hotcolour = $config['hotcolour']
+    $hot = $config['hot']
 end
 
 def pull_conditions
@@ -149,6 +152,13 @@ def blinker
 end
 
 load_config
+set_vars
+
+puts $coldcolour
+puts $cold
+puts $warmcolour
+puts $hotcolour
+puts $hot
 
 t1=Thread.new{pull_update()}
 t2=Thread.new{blinker()}
