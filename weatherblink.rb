@@ -8,9 +8,11 @@ include Comparable
 
 def load_config
   config = YAML::load(File.open('config.yml'))
+  puts config
+  inspect config
 end
 
-inspect load_config
+load_config
 
 =begin
 
