@@ -21,15 +21,15 @@ def load_config
   log_time("loaded configh file\n#{$config}")
 end
 
-load_config
-
-puts $config
-
-=begin
+def set_vars
+    $coldcolour = $config['coldcolour']
+    $warmcolour = $config['warmcolour']
+    $hotcolour = $config['hotcolour']
+end
 
 def pull_conditions
   f = File.open('conditions.json', 'w')
-  f.puts open('http://api.wunderground.com/api/'+$wundergroundapikey+'/conditions/q/'+$citycode+'.json') {|f| f.read }
+  f.puts open('http://api.wunderground.com/api/'+$config['wundergroundapikey']+'/conditions/q/'+$config['citycode']+'.json') {|f| f.read }
   f.close
   system('chmod 777 conditions.json')
 end
@@ -135,8 +135,6 @@ def pull_update
    end
 end
 
-
-=begin
 def blinker
    while true
     display_conditions
@@ -150,10 +148,10 @@ def blinker
    end
 end
 
+load_config
 
 t1=Thread.new{pull_update()}
 t2=Thread.new{blinker()}
 t1.join
 t2.join
 
-=end
