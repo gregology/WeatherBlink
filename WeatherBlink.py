@@ -36,11 +36,11 @@ def temp_to_colour(temp):
     return str(red) + "," + str(green) + "," + str(blue)
 
 
-def blink(rgb):
+def blink(rgb, pause=0.5):
     cmd = 'mkdir test' + rgb # ./blink1-tool --rgb ' + rgb + ' -ms 100 -t 0'
     logger.debug('Running ' + cmd)
     print 'blink: ' + rgb
-    time.sleep(0.5)
+    time.sleep(pause)
 #    os.system(cmd)
 
 
@@ -81,7 +81,7 @@ def blink_weather():
     while True:
       colour_temp = temp_to_colour(weather['temp'])
       if weather['alerts']:
-        blink('255,0,0')
+        blink('255,0,0', pause=0.25)
         blink('0,0,255')
       elif weather['snowing']:
         blink('255,255,255')
