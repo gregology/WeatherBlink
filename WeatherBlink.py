@@ -1,4 +1,5 @@
 import urllib2, json, logging, re, os, time, datetime, thread
+from math import exp
 from pprint import pprint
 
 logger = logging.getLogger('WeatherBlink')
@@ -13,8 +14,11 @@ logger.info('Start time')
 # User variables
 city = "zmw:00000.1.71063"
 key = "236d258e67fc286e"
-cold = -5
-warm = 10
+
+#http://www.eldoradocountyweather.com/canada/climate2/Ottawa.html
+avg_month_temp_ottawa = [-10.5, -8.6, -2.4, 6., 13.6, 18.4, 21., 19.7, 14.7, 8.2, 1.5, -6.6]
+std_month_temp_ottawa = [2.9, 2.7, 2.5, 1.9, 1.8, 1.3,1.1,1.1,1.2,1.6,1.7,3.3]
+
 
 logger.debug('city: ' + city)
 logger.debug('key: ' + key)
@@ -25,7 +29,12 @@ def colour_limit(colour):
 
 
 def temp_to_colour(temp):
-    colourratio = (float(temp - cold) / float(warm - cold)) # returns ratio as float between cold and warm
+    month = datetime.datetime.today().month
+    #assume temperatures are normally distributed around the average that month.
+    #given a temp, what is the CDF at that point, given the avg. temp and std. 
+    monthly_avg = avg_month_temp_ottawa[month-1]
+    monthly_std = std_month_temp_ottawa[month-1]
+    colourratio = approx_standard_norm_cdf( (temp - monthly_avg)/monthly_std )
     logger.debug('Using ' + str(colourratio) + ' as colour ratio')
     red = colour_limit(int(255 * (colourratio)*2))
     blue = colour_limit(int(255 * (0.7 - colourratio)*2))
@@ -36,11 +45,18 @@ def temp_to_colour(temp):
     return str(red) + "," + str(green) + "," + str(blue)
 
 
-def blink(rgb):
+def approx_standard_norm_cdf(x):
+    if x >= 0:
+      return 1 - 0.5*exp(-1.2*x**(1.3))
+    else:
+      return 0.5*exp(-1.2*(-x)**(1.3))
+
+
+def blink(rgb, pause=0.5):
     cmd = 'mkdir test' + rgb # ./blink1-tool --rgb ' + rgb + ' -ms 100 -t 0'
     logger.debug('Running ' + cmd)
     print 'blink: ' + rgb
-    time.sleep(0.5)
+    time.sleep(pause)
 #    os.system(cmd)
 
 
@@ -81,7 +97,7 @@ def blink_weather():
     while True:
       colour_temp = temp_to_colour(weather['temp'])
       if weather['alerts']:
-        blink('255,0,0')
+        blink('255,0,0', pause=0.25)
         blink('0,0,255')
       elif weather['snowing']:
         blink('255,255,255')
