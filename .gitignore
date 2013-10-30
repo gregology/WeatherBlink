@@ -2,3 +2,4 @@ Gemfile.lock
 conditions.json
 config.yml
 *.log
+sandbox.py
