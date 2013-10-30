@@ -53,11 +53,11 @@ def approx_standard_norm_cdf(x):
 
 
 def blink(rgb, pause=0.5):
-    cmd = 'mkdir test' + rgb # ./blink1-tool --rgb ' + rgb + ' -ms 100 -t 0'
+    cmd = './blink1-tool --rgb ' + rgb + ' -m 300'
     logger.debug('Running ' + cmd)
     print 'blink: ' + rgb
+    os.system(cmd)
     time.sleep(pause)
-#    os.system(cmd)
 
 
 def fetch_weather():
