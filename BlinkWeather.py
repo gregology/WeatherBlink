@@ -56,31 +56,19 @@ def blink(rgb, pause=0.5):
     cmd = './blink1-tool --rgb ' + rgb + ' -m 300'
     logger.debug('Running ' + cmd)
     print 'blink: ' + rgb
-    os.system(cmd)
+    #os.system(cmd)
     time.sleep(pause)
 
 
 def fetch_weather():
-    conditionsurl = ("http://api.wunderground.com/api/" + key + "/conditions/q/" + city + ".json")
-    logger.debug('conditions url: ' + conditionsurl)
-    
-    alerturl = ("http://api.wunderground.com/api/" + key + "/alerts/q/" + city + ".json")
-    logger.debug('alerts url: ' + alerturl)
-    
-    conditionsdata = json.load(urllib2.urlopen(conditionsurl))
-    logger.debug('conditions loaded: ' + str(len(conditionsdata))) if len(conditionsdata) > 0 else logger.error('no conditions data loaded :(')
-    logger.info('current conditions: ' + conditionsdata[u'current_observation'][u'weather'])
-    
-    alertdata = json.load(urllib2.urlopen(alerturl))
-    logger.debug('alerts loaded: ' + str(len(alertdata))) if len(alertdata) > 0 else logger.error('no alerts data loaded :(')
-    logger.info('current alerts: ' + str(alertdata[u'alerts']))
-    
-    snowing = (True if re.search(r"\bsnow", conditionsdata[u'current_observation'][u'weather'], re.IGNORECASE) else False)
-    raining = (True if re.search(r"\bdrizzle|\brain|\bshower", conditionsdata[u'current_observation'][u'weather'], re.IGNORECASE) else False)
-    alerts = (True if len(alertdata[u'alerts']) > 0 else False)
+    from pprint import pprint
+    json_data=open('conditions.json')
+
+    conditionsdata = json.load(json_data)
+    json_data.close()
 
     global weather
-    weather = {'conditions':conditionsdata[u'current_observation'][u'weather'], 'temp':conditionsdata[u'current_observation'][u'temp_c'], 'snowing':snowing, 'raining':raining, 'alerts':alerts}
+    weather = {'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
 
 
 def ouput_weather():
@@ -95,42 +83,25 @@ def ouput_weather():
 
 def blink_weather():
     while True:
-      colour_temp = temp_to_colour(weather['temp'])
-      if weather['alerts']:
-        blink('255,0,0', pause=0.25)
-        blink('0,0,255')
-      elif weather['snowing']:
-        blink('255,255,255')
-        blink(colour_temp)
-      elif weather['raining']:
-      	blink('0,0,255')
-      	blink(colour_temp)
-      else:
-      	blink('0,0,0')
-        blink(colour_temp)
-
-def weather_updater():
-    while True:
-    	fetch_weather()
-    	ouput_weather()
-    	time.sleep(15)
-
-fetch_weather()
-
-ouput_weather()
-
-with open('conditions.json', 'w') as outfile:
-  json.dump(weather, outfile)
+        fetch_weather()
+        print weather
+        for x in range(0, 60):
+            colour_temp = temp_to_colour(weather['temp'])
+            if weather['alerts']:
+               blink('255,0,0', pause=0.25)
+               blink('0,0,255')
+            elif weather['snowing']:
+               blink('255,255,255')
+               blink(colour_temp)
+            elif weather['raining']:
+               blink('0,0,255')
+               blink(colour_temp)
+            else:
+               blink('0,0,0')
+               blink(colour_temp)
 
 
-from pprint import pprint
-json_data=open('conditions.json')
-
-data = json.load(json_data)
-pprint(data)
-json_data.close()
-
-print data
+blink_weather()
 
 
 logger.info('End time\n\n\n')
