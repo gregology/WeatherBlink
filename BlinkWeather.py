@@ -2,8 +2,8 @@ import urllib2, json, logging, re, os, time, datetime, thread
 from math import exp
 from pprint import pprint
 
-logger = logging.getLogger('WeatherBlink')
-hdlr = logging.FileHandler('./wb.log')
+logger = logging.getLogger('BlinkWeather')
+hdlr = logging.FileHandler('./blink.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
