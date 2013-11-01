@@ -53,10 +53,10 @@ def approx_standard_norm_cdf(x):
 
 
 def blink(rgb, pause=0.5):
-    cmd = './blink1-tool --rgb ' + rgb + ' -m 300'
+    cmd = './../blink1/commandline/blink1-tool --rgb ' + rgb + ' -m 300'
     logger.debug('Running ' + cmd)
     print 'blink: ' + rgb
-    #os.system(cmd)
+    os.system(cmd)
     time.sleep(pause)
 
 
