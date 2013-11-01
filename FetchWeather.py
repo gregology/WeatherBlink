@@ -39,12 +39,12 @@ def fetch_weather():
     alerts = (True if len(alertdata[u'alerts']) > 0 else False)
 
     global weather
-    weather = {'fetch_time':conditionsdata[u'current_observation'][u'local_time_rfc822'], 'conditions':conditionsdata[u'current_observation'][u'weather'], 'temp':conditionsdata[u'current_observation'][u'temp_c'], 'snowing':snowing, 'raining':raining, 'alerts':alerts}
+    weather = {'time_string':conditionsdata[u'current_observation'][u'local_time_rfc822'], 'timestamp':conditionsdata[u'current_observation'][u'observation_epoch'], 'conditions':conditionsdata[u'current_observation'][u'weather'], 'temp':conditionsdata[u'current_observation'][u'temp_c'], 'snowing':snowing, 'raining':raining, 'alerts':alerts}
 
 def ouput_weather():
     print "Current Weather"
     print "###############"
-    print "Fetch time: " + weather['fetch_time']
+    print "Fetch time: " + weather['time_string']
     print "Conditions: " + weather['conditions']
     print "Temp: " + str(weather['temp']) + "C"
     print "Snowing: " + str(weather['snowing'])

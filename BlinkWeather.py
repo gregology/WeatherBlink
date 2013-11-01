@@ -52,7 +52,7 @@ def approx_standard_norm_cdf(x):
       return 0.5*exp(-1.2*(-x)**(1.3))
 
 
-def blink(rgb, pause=0.5, fade=300):
+def blink(rgb, pause=1, fade=300):
     cmd = './../blink1/commandline/blink1-tool --rgb ' + rgb + ' -m ' + str(fade)
     logger.debug('Running ' + cmd)
     print 'blink: ' + rgb
@@ -68,13 +68,13 @@ def fetch_weather():
     json_data.close()
 
     global weather
-    weather = {'fetch_time':conditionsdata[u'fetch_time'], 'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
+    weather = {'time_string':conditionsdata[u'time_string'], 'timestamp':int(conditionsdata[u'timestamp']), 'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
 
 
 def ouput_weather():
     print "Current Weather"
     print "###############"
-    print "Fetch time: " + weather['fetch_time']
+    print "Fetch time: " + weather['time_string']
     print "Conditions: " + weather['conditions']
     print "Temp: " + str(weather['temp']) + "C"
     print "Snowing: " + str(weather['snowing'])
@@ -86,11 +86,19 @@ def blink_weather():
     while True:
         fetch_weather()
         print weather
-        for x in range(0, 60):
+        for x in range(0, 30):
             colour_temp = temp_to_colour(weather['temp'])
-            if weather['alerts']:
-               blink('255,0,0', pause=0.25)
-               blink('0,0,255')
+            time_since_update = int(time.time() -  weather['timestamp'])
+            if time_since_update > 900:
+               blink('255,0,0', pause=0.2, fade=0)
+               blink('255,255,0', pause=0.2, fade=0)
+               blink('0,255,0', pause=0.2, fade=0)
+               blink('0,255,255', pause=0.2, fade=0)
+               blink('0,0,255', pause=0.2, fade=0)
+               blink('255,0,255', pause=0.2, fade=0)
+            elif weather['alerts']:
+               blink('255,0,255')
+               blink(colour_temp)
             elif weather['snowing']:
                blink('255,255,255')
                blink(colour_temp)
