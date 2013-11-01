@@ -52,8 +52,8 @@ def approx_standard_norm_cdf(x):
       return 0.5*exp(-1.2*(-x)**(1.3))
 
 
-def blink(rgb, pause=0.5):
-    cmd = './../blink1/commandline/blink1-tool --rgb ' + rgb + ' -m 300'
+def blink(rgb, pause=0.5, fade=300):
+    cmd = './../blink1/commandline/blink1-tool --rgb ' + rgb + ' -m ' + str(fade)
     logger.debug('Running ' + cmd)
     print 'blink: ' + rgb
     os.system(cmd)
@@ -68,12 +68,13 @@ def fetch_weather():
     json_data.close()
 
     global weather
-    weather = {'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
+    weather = {'fetch_time':conditionsdata[u'fetch_time'], 'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
 
 
 def ouput_weather():
     print "Current Weather"
     print "###############"
+    print "Fetch time: " + weather['fetch_time']
     print "Conditions: " + weather['conditions']
     print "Temp: " + str(weather['temp']) + "C"
     print "Snowing: " + str(weather['snowing'])

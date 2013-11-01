@@ -27,6 +27,7 @@ def fetch_weather():
     
     conditionsdata = json.load(urllib2.urlopen(conditionsurl))
     logger.debug('conditions loaded: ' + str(len(conditionsdata))) if len(conditionsdata) > 0 else logger.error('no conditions data loaded :(')
+    logger.info('time of fetch: ' + conditionsdata[u'current_observation'][u'local_time_rfc822'])
     logger.info('current conditions: ' + conditionsdata[u'current_observation'][u'weather'])
     
     alertdata = json.load(urllib2.urlopen(alerturl))
@@ -38,11 +39,12 @@ def fetch_weather():
     alerts = (True if len(alertdata[u'alerts']) > 0 else False)
 
     global weather
-    weather = {'conditions':conditionsdata[u'current_observation'][u'weather'], 'temp':conditionsdata[u'current_observation'][u'temp_c'], 'snowing':snowing, 'raining':raining, 'alerts':alerts}
+    weather = {'fetch_time':conditionsdata[u'current_observation'][u'local_time_rfc822'], 'conditions':conditionsdata[u'current_observation'][u'weather'], 'temp':conditionsdata[u'current_observation'][u'temp_c'], 'snowing':snowing, 'raining':raining, 'alerts':alerts}
 
 def ouput_weather():
     print "Current Weather"
     print "###############"
+    print "Fetch time: " + weather['fetch_time']
     print "Conditions: " + weather['conditions']
     print "Temp: " + str(weather['temp']) + "C"
     print "Snowing: " + str(weather['snowing'])
