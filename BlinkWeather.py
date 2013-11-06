@@ -86,16 +86,16 @@ def blink_weather():
     while True:
         fetch_weather()
         print weather
-        for x in range(0, 30):
+        for x in range(0, 10):
             colour_temp = temp_to_colour(weather['temp'])
             time_since_update = int(time.time() -  weather['timestamp'])
             if time_since_update > 900:
-               blink('255,0,0', pause=0.2, fade=0)
-               blink('255,255,0', pause=0.2, fade=0)
-               blink('0,255,0', pause=0.2, fade=0)
-               blink('0,255,255', pause=0.2, fade=0)
-               blink('0,0,255', pause=0.2, fade=0)
-               blink('255,0,255', pause=0.2, fade=0)
+               blink('255,0,0', pause=0.2, fade=0.1)
+               blink('255,255,0', pause=0.2, fade=0.1)
+               blink('0,255,0', pause=0.2, fade=0.1)
+               blink('0,255,255', pause=0.2, fade=0.1)
+               blink('0,0,255', pause=0.2, fade=0.1)
+               blink('255,0,255', pause=0.2, fade=0.1)
             elif weather['alerts']:
                blink('255,0,255')
                blink(colour_temp)
