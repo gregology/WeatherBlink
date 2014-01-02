@@ -3,6 +3,8 @@ WeatherBlink
 
 A Python weather indicator for Blink1 indtened to be run on a Raspberry Pi
 
+![alt text](http://i.imgur.com/JaVcq7S.jpg "WeatherBlink blinking cold weather")
+
 ## Install instructions
 
 ### Install Raspbian
