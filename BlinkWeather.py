@@ -68,7 +68,7 @@ def fetch_weather():
     json_data.close()
 
     global weather
-    weather = {'time_string':conditionsdata[u'time_string'], 'timestamp':int(conditionsdata[u'timestamp']), 'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
+    weather = {'time_string':conditionsdata[u'time_string'], 'timestamp':int(conditionsdata[u'timestamp']), 'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'feelslike':float(conditionsdata[u'feelslike']), 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
 
 
 def ouput_weather():
@@ -77,6 +77,7 @@ def ouput_weather():
     print "Fetch time: " + weather['time_string']
     print "Conditions: " + weather['conditions']
     print "Temp: " + str(weather['temp']) + "C"
+    print "Feels like: " + str(weather['feelslike']) + "C"
     print "Snowing: " + str(weather['snowing'])
     print "Raining: " + str(weather['raining'])
     print "Alerts: " + str(weather['alerts'])
@@ -87,7 +88,7 @@ def blink_weather():
         fetch_weather()
         print weather
         for x in range(0, 10):
-            colour_temp = temp_to_colour(weather['temp'])
+            colour_temp = temp_to_colour(weather['feelslike'])
             time_since_update = int(time.time() -  weather['timestamp'])
             if time_since_update > 900:
                blink('255,0,0', pause=0.2, fade=0.1)
