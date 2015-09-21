@@ -60,6 +60,17 @@ def blink(rgb, pause=1, fade=300):
     time.sleep(pause)
 
 
+def fetch_weather():
+    from pprint import pprint
+    json_data=open('conditions.json')
+
+    conditionsdata = json.load(json_data)
+    json_data.close()
+
+    global weather
+    weather = {'time_string':conditionsdata[u'time_string'], 'timestamp':int(conditionsdata[u'timestamp']), 'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'feelslike':float(conditionsdata[u'feelslike']), 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
+
+
 def ouput_weather():
     print "Current Weather"
     print "###############"
