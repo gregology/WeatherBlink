@@ -30,8 +30,8 @@ def colour_limit(colour):
 
 def temp_to_colour(temp):
     month = datetime.datetime.today().month
-    #assume temperatures are normally distributed around the average that month.
-    #given a temp, what is the CDF at that point, given the avg. temp and std. 
+    # assume temperatures are normally distributed around the average that month.
+    # given a temp, what is the CDF at that point, given the avg. temp and std.
     monthly_avg = avg_month_temp_ottawa[month-1]
     monthly_std = std_month_temp_ottawa[month-1]
     colourratio = approx_standard_norm_cdf( (temp - monthly_avg)/monthly_std )
@@ -58,17 +58,6 @@ def blink(rgb, pause=1, fade=300):
     print 'blink: ' + rgb
     os.system(cmd)
     time.sleep(pause)
-
-
-def fetch_weather():
-    from pprint import pprint
-    json_data=open('conditions.json')
-
-    conditionsdata = json.load(json_data)
-    json_data.close()
-
-    global weather
-    weather = {'time_string':conditionsdata[u'time_string'], 'timestamp':int(conditionsdata[u'timestamp']), 'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'feelslike':float(conditionsdata[u'feelslike']), 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
 
 
 def ouput_weather():
@@ -98,14 +87,14 @@ def blink_weather():
                blink('0,0,255', pause=0.2, fade=0.1)
                blink('255,0,255', pause=0.2, fade=0.1)
             elif weather['alerts']:
-               blink('255,0,255')
-               blink(colour_temp)
+               blink('255,0,255', pause=0.5)
+               blink(colour_temp, pause=1.5)
             elif weather['snowing']:
-               blink('255,255,255')
-               blink(colour_temp)
+               blink('255,255,255', pause=0.5)
+               blink(colour_temp, pause=1.5)
             elif weather['raining']:
-               blink('0,0,255')
-               blink(colour_temp)
+               blink('0,0,255', pause=0.5)
+               blink(colour_temp, pause=1.5)
             else:
                blink('0,0,0')
                blink(colour_temp)
