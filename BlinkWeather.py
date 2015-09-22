@@ -15,10 +15,9 @@ logger.info('Start time')
 city = "zmw:00000.1.71063"
 key = "236d258e67fc286e"
 
-#http://www.eldoradocountyweather.com/canada/climate2/Ottawa.html
+# http://www.eldoradocountyweather.com/canada/climate2/Ottawa.html
 avg_month_temp_ottawa = [-10.5, -8.6, -2.4, 6., 13.6, 18.4, 21., 19.7, 14.7, 8.2, 1.5, -6.6]
-std_month_temp_ottawa = [2.9, 2.7, 2.5, 1.9, 1.8, 1.3,1.1,1.1,1.2,1.6,1.7,3.3]
-
+std_month_temp_ottawa = [2.9, 2.7, 2.5, 1.9, 1.8, 1.3, 1.1, 1.1, 1.2, 1.6, 1.7, 3.3]
 
 logger.debug('city: ' + city)
 logger.debug('key: ' + key)
