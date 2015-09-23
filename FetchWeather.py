@@ -1,6 +1,8 @@
 import urllib2, json, logging, re, os, time, datetime, thread
 from math import exp
 from pprint import pprint
+from astral import *
+import pytz
 
 logger = logging.getLogger('WeatherBlink')
 hdlr = logging.FileHandler('./fetch.log')
@@ -14,9 +16,18 @@ logger.info('Start time')
 # User variables
 city = "zmw:00000.1.71063"
 key = "236d258e67fc286e"
+eastern = pytz.timezone('US/Eastern')
+city_name = 'Ottawa'
 
 logger.debug('city: ' + city)
 logger.debug('key: ' + key)
+
+def daytime():
+    sunset = Astral()[city_name].sunset(datetime.datetime.now()).time()
+    sunrise = Astral()[city_name].sunrise(datetime.datetime.now()).time()
+    now = eastern.localize(datetime.datetime.now()).time()
+    return sunrise < now < sunset
+
 
 def fetch_weather():
     conditionsurl = ("http://api.wunderground.com/api/" + key + "/conditions/q/" + city + ".json")
@@ -37,10 +48,7 @@ def fetch_weather():
     snowing = (True if re.search(r"\bsnow", conditionsdata[u'current_observation'][u'weather'], re.IGNORECASE) else False)
     raining = (True if re.search(r"\bdrizzle|\brain|\bshower", conditionsdata[u'current_observation'][u'weather'], re.IGNORECASE) else False)
     alerts  = (True if len(alertdata[u'alerts']) > 0 else False)
-    cloudy  = (True if re.search(r"\bcloud", conditionsdata[u'current_observation'][u'weather'], re.IGNORECASE) else False)
-    daytime = (False if conditionsdata['current_observation']['solarradiation'] == '--' else True)
-
-    # import pdb; pdb.set_trace()
+    cloudy  = (True if re.search(r"\bcloud", conditionsdata[u'current_observation'][u'weather'], re.IGNORECASE) or raining or snowing else False)
 
     global weather
     weather = {
@@ -53,7 +61,7 @@ def fetch_weather():
         'raining':     raining,
         'cloudy':      cloudy,
         'alerts':      alerts,
-        'daytime':     daytime,
+        'daytime':     daytime(),
     }
 
 def ouput_weather():
@@ -68,6 +76,8 @@ def ouput_weather():
     print "Cloudy: " + str(weather['cloudy'])
     print "Day Time: " + str(weather['daytime'])
     print "Alerts: " + str(weather['alerts'])
+
+# import ipdb; ipdb.set_trace()
 
 fetch_weather()
 
