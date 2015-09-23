@@ -11,16 +11,9 @@ logger.setLevel(logging.DEBUG)
 
 logger.info('Start time')
 
-# User variables
-city = "zmw:00000.1.71063"
-key = "236d258e67fc286e"
-
 # http://www.eldoradocountyweather.com/canada/climate2/Ottawa.html
 avg_month_temp_ottawa = [-10.5, -8.6, -2.4, 6., 13.6, 18.4, 21., 19.7, 14.7, 8.2, 1.5, -6.6]
 std_month_temp_ottawa = [2.9, 2.7, 2.5, 1.9, 1.8, 1.3, 1.1, 1.1, 1.2, 1.6, 1.7, 3.3]
-
-logger.debug('city: ' + city)
-logger.debug('key: ' + key)
 
 
 def colour_limit(colour):
@@ -59,17 +52,6 @@ def blink(rgb, pause=1, fade=300):
     time.sleep(pause)
 
 
-def fetch_weather():
-    from pprint import pprint
-    json_data=open('conditions.json')
-
-    conditionsdata = json.load(json_data)
-    json_data.close()
-
-    global weather
-    weather = {'time_string':conditionsdata[u'time_string'], 'timestamp':int(conditionsdata[u'timestamp']), 'conditions':conditionsdata[u'conditions'], 'temp':conditionsdata[u'temp'], 'feelslike':float(conditionsdata[u'feelslike']), 'snowing':conditionsdata[u'snowing'], 'raining':conditionsdata[u'raining'], 'alerts':conditionsdata[u'alerts']}
-
-
 def ouput_weather():
     print "Current Weather"
     print "###############"
@@ -77,6 +59,7 @@ def ouput_weather():
     print "Conditions: " + weather['conditions']
     print "Temp: " + str(weather['temp']) + "C"
     print "Feels like: " + str(weather['feelslike']) + "C"
+    print "Day Time: " + str(weather['daytime'])
     print "Snowing: " + str(weather['snowing'])
     print "Raining: " + str(weather['raining'])
     print "Alerts: " + str(weather['alerts'])
@@ -89,7 +72,7 @@ def blink_weather():
         for x in range(0, 10):
             colour_temp = temp_to_colour(weather['feelslike'])
             time_since_update = int(time.time() -  weather['timestamp'])
-            if time_since_update > 900:
+            if time_since_update > 1800:
                blink('255,0,0', pause=0.2, fade=0.1)
                blink('255,255,0', pause=0.2, fade=0.1)
                blink('0,255,0', pause=0.2, fade=0.1)
